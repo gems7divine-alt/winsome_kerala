@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --color-primary: #e91e8c;
+  --color-primary-dark: #c41775;
+  --color-primary-light: #fce7f3;
+  --color-primary-soft: #fdf2f8;
+  --color-text: #1a1a2e;
+  --color-text-muted: #64748b;
+  --font-sans: 'Poppins', system-ui, sans-serif;
+  --font-script: 'Great Vibes', cursive;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans text-text bg-white antialiased;
+  }
+
+  button {
+    @apply cursor-pointer;
+  }
+}
