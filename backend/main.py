@@ -1,9 +1,4 @@
-"""FastAPI entrypoint — booking appointments API.
-
-Frontend: ``frontend/src/pages/BookingAppointment/BookingAppointment.jsx``
-  collects 1. Full Name  2. Mobile  3. Email  4. Service  5. Date  6. Time
-  and POSTs it here as JSON. This module validates (pydantic schemas),
-  persists (SQLAlchemy model ``book_employeetable``), and returns the row.
+"""FastAPI entrypoint — booking appointments API (see ``/docs``).
 
 Run (from ``backend/``)::
 
@@ -12,9 +7,11 @@ Run (from ``backend/``)::
 
 from __future__ import annotations
 
+import os
+from contextlib import asynccontextmanager
 from datetime import date
 
-from fastapi import Depends, FastAPI, HTTPException, Query, status
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.exc import IntegrityError
@@ -27,20 +24,32 @@ from databaseschema.schema import (
     BookEmployeeResponse,
     BookEmployeeUpdate,
 )
-import os
+from emailsending import send_booking_confirmation
 
 
 class AdminLogin(BaseModel):
     username: str
     password: str
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # No-op when Postgres is unreachable (e.g. importing for tests);
+    # the request will then surface a clear 500 instead of crashing boot.
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as exc:  # pragma: no cover - boot-time safety
+        print(f"[warn] create_all skipped (DB unreachable?): {exc}")
+    yield
+
+
 app = FastAPI(
     title="Winsome Kerala — Booking API",
     version="1.0.0",
     description="Collects BookingAppointment form data and stores it in book_employeetable.",
+    lifespan=lifespan,
 )
 
-# Vite dev server (default http://localhost:5173) + common alternatives.
 # "*" keeps local file:// / LAN testing working without extra config.
 app.add_middleware(
     CORSMiddleware,
@@ -67,14 +76,11 @@ def get_db():
         db.close()
 
 
-@app.on_event("startup")
-def _create_tables() -> None:
-    # No-op when Postgres is unreachable (e.g. importing for tests);
-    # the request will then surface a clear 500 instead of crashing boot.
-    try:
-        Base.metadata.create_all(bind=engine)
-    except Exception as exc:  # pragma: no cover - boot-time safety
-        print(f"[warn] create_all skipped (DB unreachable?): {exc}")
+def _get_or_404(db: Session, booking_id: int) -> BookEmployeeTable:
+    row = db.get(BookEmployeeTable, booking_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Booking not found.")
+    return row
 
 
 @app.get("/", tags=["meta"])
@@ -108,8 +114,11 @@ def admin_login(creds: AdminLogin):
     tags=["bookings"],
     summary="Store one BookingAppointment form submission",
 )
-def create_booking(payload: BookEmployeeCreate, db: Session = Depends(get_db)):
-    """Collect frontend form data and insert one row into ``book_employeetable``."""
+def create_booking(
+    payload: BookEmployeeCreate,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
     row = BookEmployeeTable(
         full_name=payload.full_name,
         mobile_number=payload.mobile_number,
@@ -136,6 +145,16 @@ def create_booking(payload: BookEmployeeCreate, db: Session = Depends(get_db)):
             ) from exc
         raise HTTPException(status_code=400, detail="Could not save booking (integrity error).") from exc
     db.refresh(row)
+    # Confirmation email to the address the customer typed in the form.
+    # Runs after the 201 response; a mail failure must not fail the booking.
+    background_tasks.add_task(
+        send_booking_confirmation,
+        to_email=payload.email_address,
+        full_name=payload.full_name,
+        service_name=payload.service_name,
+        booking_date=payload.booking_date,
+        booking_time=payload.booking_time,
+    )
     return row
 
 
@@ -182,17 +201,12 @@ def list_bookings(
 
 @app.get("/api/bookings/{booking_id}", response_model=BookEmployeeResponse, tags=["bookings"])
 def get_booking(booking_id: int, db: Session = Depends(get_db)):
-    row = db.get(BookEmployeeTable, booking_id)
-    if row is None:
-        raise HTTPException(status_code=404, detail="Booking not found.")
-    return row
+    return _get_or_404(db, booking_id)
 
 
 @app.patch("/api/bookings/{booking_id}", response_model=BookEmployeeResponse, tags=["bookings"])
 def update_booking(booking_id: int, patch: BookEmployeeUpdate, db: Session = Depends(get_db)):
-    row = db.get(BookEmployeeTable, booking_id)
-    if row is None:
-        raise HTTPException(status_code=404, detail="Booking not found.")
+    row = _get_or_404(db, booking_id)
     for field, value in patch.model_dump(exclude_unset=True).items():
         setattr(row, field, value)
     try:
@@ -206,9 +220,7 @@ def update_booking(booking_id: int, patch: BookEmployeeUpdate, db: Session = Dep
 
 @app.delete("/api/bookings/{booking_id}", tags=["bookings"])
 def delete_booking(booking_id: int, db: Session = Depends(get_db)):
-    row = db.get(BookEmployeeTable, booking_id)
-    if row is None:
-        raise HTTPException(status_code=404, detail="Booking not found.")
+    row = _get_or_404(db, booking_id)
     db.delete(row)
     db.commit()
     return {"deleted": booking_id}

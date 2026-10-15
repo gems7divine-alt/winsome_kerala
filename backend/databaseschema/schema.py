@@ -1,16 +1,3 @@
-"""Pydantic schemas for the booking flow (table ``book_employeetable``).
-
-Mirrors the UI form:
-  1. Full Name  2. Mobile Number  3. Email Address
-  4. Select Service  5. Select Date  6. Select Time
-
-Each field accepts the canonical API name *and* the frontend's key
-(e.g. ``name`` / ``mobile`` / ``email`` / ``selected_service`` /
-``selected_date`` / ``selected_time``), and date/time accept the exact
-string formats the UI produces (``"Mon Oct 12 2026"``,
-``"Mon, 12 Oct 2026"``, ISO dates, ``"9:30 AM"``).
-"""
-
 from __future__ import annotations
 
 import re
@@ -24,7 +11,6 @@ Status = Literal["pending", "confirmed", "cancelled", "completed"]
 # Slots shown in the UI grid: 9:30 AM .. 6:30 PM, all on the half hour.
 ALLOWED_SLOT_HOURS = frozenset({9, 10, 11, 12, 13, 14, 15, 16, 17, 18})
 
-_MOBILE_RE = re.compile(r"^\+?[0-9][0-9\s-]{8,13}[0-9]$")
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
@@ -76,8 +62,6 @@ class BookEmployeeBase(BaseModel):
     @field_validator("full_name", mode="before")
     @classmethod
     def _name(cls, v):
-        if isinstance(v, dict):  # emailjs-style {from_name/user_name} fallback
-            v = v.get("from_name") or v.get("user_name") or ""
         v = str(v or "").strip()
         if len(v) < 2:
             raise ValueError("Full name must be at least 2 characters")
@@ -142,7 +126,7 @@ class BookEmployeeBase(BaseModel):
 
 
 class BookEmployeeCreate(BookEmployeeBase):
-    """POST body for a new booking. Accepts frontend keys as aliases."""
+    """POST body for a new booking."""
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -214,17 +198,7 @@ class BookEmployeeUpdate(BaseModel):
         return BookEmployeeBase._booking_time(v) if v is not None else v
 
 
-class BookEmployeeResponse(BaseModel):
-    """GET / booking response — includes DB-generated fields.
-
-    Plain field types on purpose: responses must serialize legacy rows
-    (e.g. pre-existing mobile numbers) without re-running the strict
-    *input* validators from ``BookEmployeeBase``. Otherwise one old row
-    fails validation and the whole list endpoint returns 500.
-    """
-
-    model_config = ConfigDict(from_attributes=True)
-
+class BookEmployeeResponse(BaseModel):  
     id: int
     full_name: str
     mobile_number: str
@@ -237,3 +211,6 @@ class BookEmployeeResponse(BaseModel):
     status: str
     created_at: datetime
     updated_at: datetime
+
+
+    model_config = ConfigDict(from_attributes=True)

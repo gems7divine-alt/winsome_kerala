@@ -7,7 +7,6 @@ Covers the form in the UI:
 """
 
 from sqlalchemy import (
-    CHAR,
     CheckConstraint,
     Column,
     Date,
@@ -44,19 +43,16 @@ class BookEmployeeTable(Base):
         Index("ix_book_employeetable_date", "booking_date"),
     )
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
 
-    # 1-3. Customer details
     full_name = Column(String(100), nullable=False)
     mobile_number = Column(String(15), nullable=False)
     email_address = Column(String(255), nullable=False)
 
-    # 4. Service ("Facial", 60 mins, blocks 1 slot, Rs.400 onwards)
     service_name = Column(String(200), nullable=False)
     duration_mins = Column(Integer, nullable=False, server_default="60")
     slots_blocked = Column(Integer, nullable=False, server_default="1")
 
-    # 5-6. Slot selection
     booking_date = Column(Date, nullable=False)
     booking_time = Column(Time, nullable=False)
 
