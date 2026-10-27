@@ -232,3 +232,10 @@ def delete_booking(booking_id: int, db: Session = Depends(get_db)):
     db.delete(row)
     db.commit()
     return {"deleted": booking_id}
+
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
