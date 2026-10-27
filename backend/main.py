@@ -7,6 +7,7 @@ Run (from ``backend/``)::
 
 from __future__ import annotations
 
+import logging
 import os
 from contextlib import asynccontextmanager
 from datetime import date
@@ -16,6 +17,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+
+# Make emailsending.mailsend warnings/errors (e.g. silent email failures from
+# BackgroundTasks) show up in the uvicorn console with timestamps + tracebacks.
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
 
 from database.connection import Base, SessionLocal, engine
 from database_models.models import BookEmployeeTable
