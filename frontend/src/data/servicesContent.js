@@ -104,6 +104,7 @@ export const services = [
     id: 'pimple-care',
     title: 'Pimple Care',
     image: pimpleCareImage,
+    price: '₹2500',
     priceCategoryIds: ['facials'],
     durationMins: 45,
     durationLabel: '45 mins',
