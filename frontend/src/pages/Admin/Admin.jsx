@@ -1,12 +1,10 @@
 import { useState } from 'react';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-// Fixed admin credentials (demo only — move to backend/hashed auth for production).
-const FIXED_USERNAME = 'vimal';
+
 const FIXED_PASSWORD = '123456';
 
 export default function Admin({ onBack, onLoginSuccess }) {
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -16,16 +14,16 @@ export default function Admin({ onBack, onLoginSuccess }) {
     setError('');
     setLoading(true);
 
-    const u = username.trim();
     const p = password;
 
     try {
       // 1) Try backend verification first (POST /api/admin/login).
+      //    Username is fixed; the form only asks for the password.
       try {
         const res = await fetch(`${API_BASE}/api/admin/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: u, password: p }),
+          body: JSON.stringify({ username: FIXED_USERNAME, password: p }),
         });
         if (res.ok) {
           sessionStorage.setItem('winsome_admin_auth', '1');
@@ -33,7 +31,7 @@ export default function Admin({ onBack, onLoginSuccess }) {
           return;
         }
         if (res.status === 401) {
-          setError('Invalid username or password.');
+          setError('Invalid password.');
           return;
         }
         // Non-401 (e.g. backend down) → fall through to local check below.
@@ -41,12 +39,12 @@ export default function Admin({ onBack, onLoginSuccess }) {
         // Backend unreachable → fall back to local fixed check.
       }
 
-      // 2) Local fixed-credential fallback.
-      if (u === FIXED_USERNAME && p === FIXED_PASSWORD) {
+      // 2) Local fixed-credential fallback (password only).
+      if (p === FIXED_PASSWORD) {
         sessionStorage.setItem('winsome_admin_auth', '1');
         onLoginSuccess?.();
       } else {
-        setError('Invalid username or password.');
+        setError('Invalid password.');
       }
     } finally {
       setLoading(false);
@@ -59,16 +57,6 @@ export default function Admin({ onBack, onLoginSuccess }) {
       <h1 className="mt-2 text-center text-3xl font-bold text-black">Admin Login</h1>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-3 rounded-3xl border border-slate-100 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
-        <label className="block">
-          <span className="mb-1.5 block text-sm font-bold text-black">Username</span>
-          <input
-            className="h-11 w-full rounded-xl border border-slate-200 px-4 text-sm font-medium outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-            placeholder="Enter admin username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </label>
         <label className="block">
           <span className="mb-1.5 block text-sm font-bold text-black">Password</span>
           <input

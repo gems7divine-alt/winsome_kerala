@@ -14,8 +14,8 @@ import professionalHairImage from '../assets/professionalhair.png';
 import kidsHaircutImage from '../assets/kidshaircut.png';
 import makeupImage from '../assets/makeup.png';
 import normalColourImage from '../assets/naturalcolour.png';
-import bleachingImage from '../assets/cosmetic.png';
-import waxingImage from '../assets/girl.png';
+import bleachingImage from '../assets/Bleaching.png';
+import waxingImage from '../assets/Waxing.png';
 
 export const services = [
   {
@@ -166,7 +166,8 @@ export const services = [
     id: 'ear-piercings',
     title: 'Ear Piercings',
     image: earPiercingsImage,
-    priceCategoryIds: [],
+    price: '₹200 - ₹300',
+    priceCategoryIds: ['ear-piercing-prices'],
     durationMins: 15,
     durationLabel: '15 mins',
   },
@@ -174,7 +175,8 @@ export const services = [
     id: 'earlobe-repairing',
     title: 'Earlobe Repairing',
     image: earlobeRepairingImage,
-    priceCategoryIds: [],
+    price: '₹800 - ₹1600',
+    priceCategoryIds: ['earlobe-repairing-prices'],
     durationMins: 30,
     durationLabel: '30 mins',
   },
@@ -336,6 +338,22 @@ export const servicePriceCategories = [
       { name: 'Air Brush Make Up', price: '₹18000 - ₹20000' },
       { name: 'Glass Skin Make Up', price: '₹18000 - ₹20000' },
       { name: 'Groom Make Up', price: '₹3000 - ₹5000' },
+    ],
+  },
+  {
+    id: 'ear-piercing-prices',
+    title: 'Ear Piercing',
+    items: [
+      { name: '1 (Single) Piercing', price: '₹200' },
+      { name: '2 (Both Ears) Piercings', price: '₹300' },
+    ],
+  },
+  {
+    id: 'earlobe-repairing-prices',
+    title: 'Earlobe Repairing',
+    items: [
+      { name: '1 (Single) Earlobe', price: '₹800' },
+      { name: '2 (Both) Earlobes', price: '₹1600' },
     ],
   },
 ];
