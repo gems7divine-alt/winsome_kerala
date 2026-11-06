@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import emailjs from '@emailjs/browser';
+import { Aurora, FloatingOrbs } from '../../components/ui/Decor';
 import { ArrowRightIcon } from '../../components/ui/Icon';
+import Reveal from '../../components/ui/Reveal';
 import { services } from '../../data/servicesContent';
 
 const timeSlots = ['9:30 AM', '10:30 AM', '11:30 AM', '12:30 PM', '1:30 PM', '2:30 PM', '3:30 PM', '4:30 PM', '5:30 PM', '6:30 PM'];
@@ -67,15 +69,15 @@ function loadBookings() {
   }
 }
 
-function Field({ number, label, placeholder, icon, type = 'text', value, onChange }) {
+function Field({ number, label, placeholder, icon, type = 'text', value, onChange, className = '' }) {
   return (
-    <label className="block">
+    <label className={`block ${className}`}>
       <span className="mb-1.5 flex min-h-7 items-center gap-2 text-sm font-bold text-black">
         {icon && <span className="shrink-0">{icon}</span>}
         {number}. {label}
       </span>
       <input
-        className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-black shadow-[0_6px_18px_rgba(15,23,42,0.05)] outline-none transition placeholder:text-black/60 focus:border-primary focus:ring-4 focus:ring-primary/10"
+        className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-base sm:text-sm font-medium text-black shadow-[inset_0_2px_4px_rgba(15,23,42,0.05)] outline-none transition placeholder:text-black/50 focus:border-primary focus:ring-4 focus:ring-primary/10"
         placeholder={placeholder}
         type={type}
         value={value}
@@ -370,13 +372,13 @@ function AppointmentForm() {
 
   return (
     <form
-      className="w-full rounded-3xl bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.08)] ring-1 ring-black/[0.04] sm:p-8"
+      className="w-full rounded-3xl bg-white p-4 shadow-[0_8px_0_#fbd5ea,0_30px_70px_rgba(143,15,85,0.16)] ring-1 ring-primary/10 sm:p-8"
       onSubmit={handleSubmit}
     >
       {status === 'success' && toastVisible && lastBooking && (
         <div
           role="alert"
-          className="fixed top-20 left-1/2 z-50 w-[calc(100%-2.5rem)] max-w-[520px] -translate-x-1/2 rounded-2xl bg-green-600 px-4 py-3 text-white shadow-[0_16px_40px_rgba(22,163,74,0.35)]"
+          className="modal-backdrop fixed top-20 left-1/2 z-50 w-[calc(100%-2.5rem)] max-w-[520px] -translate-x-1/2 rounded-2xl bg-green-600 px-4 py-3 text-white shadow-[0_16px_40px_rgba(22,163,74,0.35)]"
         >
           <div className="flex items-start gap-3">
             <svg className="mt-0.5 h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -400,7 +402,7 @@ function AppointmentForm() {
           </div>
         </div>
       )}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Field number="1" label="Full Name" placeholder="Enter your full name" icon={<UserIcon />} value={name} onChange={(e) => setName(e.target.value)} />
         <div>
           <label className="block">
@@ -410,7 +412,7 @@ function AppointmentForm() {
             </span>
             <input
               className={[
-                'h-11 w-full rounded-xl border bg-white px-4 text-sm font-medium text-black shadow-[0_6px_18px_rgba(15,23,42,0.05)] outline-none transition placeholder:text-black/60 focus:ring-4',
+                'h-12 w-full rounded-xl border bg-white px-4 text-base sm:text-sm font-medium text-black shadow-[inset_0_2px_4px_rgba(15,23,42,0.05)] outline-none transition placeholder:text-black/50 focus:ring-4',
                 showMobileError
                   ? 'border-red-500 focus:border-red-500 focus:ring-red-100'
                   : 'border-slate-200 focus:border-primary focus:ring-primary/10',
@@ -429,7 +431,7 @@ function AppointmentForm() {
             <p className="mt-1 text-xs font-semibold text-red-600">{mobileError}</p>
           )}
         </div>
-        <Field number="3" label="Email Address" placeholder="Enter your email address" icon={null} type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Field number="3" label="Email Address" placeholder="Enter your email address" icon={null} type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="sm:col-span-2 lg:col-span-1" />
       </div>
 
       <div className="mt-5">
@@ -438,7 +440,7 @@ function AppointmentForm() {
           <select
             value={selectedServiceId}
             onChange={(e) => setSelectedServiceId(e.target.value)}
-            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-black outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10"
+            className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-4 text-base sm:text-sm font-semibold text-black outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10"
             required
           >
             {services.map((s) => (
@@ -457,16 +459,16 @@ function AppointmentForm() {
 
       <div className="mt-6">
         <p className="mb-2 text-sm font-bold text-black">5. Select Date</p>
-        <div className="grid grid-cols-4 gap-2 sm:grid-cols-7">
+        <div data-scroll-x className="scroll-x-snap -mx-2 -mb-3 flex gap-2 overflow-x-auto px-2 pb-6 pt-1 sm:mx-0 sm:mb-0 sm:grid sm:px-0 sm:pb-2 sm:grid-cols-7 sm:overflow-visible">
           {dateSlots.map((slot) => (
-            <div key={slot.key} className="text-center">
+            <div key={slot.key} className="w-[4.25rem] shrink-0 text-center sm:w-auto">
               <p className="mb-1 text-xs font-bold text-black">{slot.day}</p>
               <button
                 className={[
-                  'h-12 w-full rounded-xl border text-sm font-bold transition',
+                  'h-14 w-full rounded-xl border text-sm font-bold transition duration-200 active:translate-y-0.5',
                   selectedDate === slot.key
-                    ? 'border-primary bg-primary text-white shadow-[0_10px_22px_rgba(233,30,140,0.22)]'
-                    : 'border-slate-200 bg-white text-black hover:border-primary',
+                    ? '-translate-y-0.5 border-primary bg-primary text-white shadow-[0_4px_0_var(--color-primary-deep),0_12px_22px_rgba(233,30,140,0.3)]'
+                    : 'border-slate-200 bg-white text-black shadow-[0_3px_0_#e2e8f0] hover:border-primary',
                 ].join(' ')}
                 type="button"
                 onClick={() => setSelectedDate(slot.key)}
@@ -488,7 +490,7 @@ function AppointmentForm() {
               : 'This service fits in a single slot.'}
           </span>
         </div>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-5">
           {timeSlots.map((time, idx) => {
             const bookable = isStartBookable(idx);
             const isOccupied = occupiedIndexes.has(idx);
@@ -505,18 +507,18 @@ function AppointmentForm() {
                     : `Select ${time} (${blockedSlots.length && isSelected ? `blocks ${blockedSlots.join(', ')}` : `blocks ${slotsNeeded} slot(s)`})`
                 }
                 className={[
-                  'h-10 rounded-xl border-2 text-xs font-semibold transition sm:text-sm',
+                  'flex min-h-12 flex-col items-center justify-center rounded-xl border-2 px-1 text-xs font-semibold leading-tight transition duration-200 sm:text-sm',
                   isSelected
-                    ? 'border-primary bg-primary text-white shadow-[0_10px_22px_rgba(233,30,140,0.24)]'
+                    ? '-translate-y-0.5 border-primary bg-primary text-white shadow-[0_4px_0_var(--color-primary-deep),0_12px_22px_rgba(233,30,140,0.3)]'
                     : !bookable
                       ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400 line-through'
-                      : 'border-primary/25 bg-white text-primary hover:border-primary',
+                      : 'border-primary/25 bg-white text-primary shadow-[0_3px_0_#fbd5ea] hover:border-primary active:translate-y-0.5',
                 ].join(' ')}
                 type="button"
                 onClick={() => setSelectedTime(time)}
               >
                 {time}
-                {!bookable && <span className="ml-1 text-[10px]">{isOccupied ? '· Booked' : '· Blocked'}</span>}
+                {!bookable && <span className="text-[10px] font-medium">{isOccupied ? 'Booked' : 'Blocked'}</span>}
               </button>
             );
           })}
@@ -543,7 +545,7 @@ function AppointmentForm() {
       </div>
 
       <button
-        className="mx-auto mt-6 flex h-12 w-full max-w-[420px] items-center justify-center gap-3 rounded-2xl bg-primary text-base font-semibold text-white shadow-[0_16px_30px_rgba(233,30,140,0.24)] transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-70"
+        className="btn-3d btn-3d-filled mx-auto mt-7 flex min-h-[3.25rem] w-full max-w-[420px] items-center justify-center gap-3 rounded-2xl text-base font-semibold disabled:cursor-not-allowed disabled:opacity-70"
         type="submit"
         disabled={status === 'sending'}
       >
@@ -567,13 +569,17 @@ function AppointmentForm() {
 
 export default function BookingAppointment() {
   return (
-    <section className="bg-white pt-24 pb-12">
-      <div className="mx-auto w-full max-w-[1100px] px-5 sm:px-8">
+    <section className="relative overflow-hidden bg-gradient-to-b from-primary-soft to-white pb-14 pt-24 sm:pt-28">
+      <Aurora />
+      <FloatingOrbs />
+      <div className="site-container relative z-10 max-w-[1100px]">
         <div className="mb-6 text-center">
-          <p className="text-base font-bold uppercase tracking-[0.22em] text-primary">Book Appointment</p>
-          <h1 className="mt-2 text-2xl font-bold text-black sm:text-3xl">Book Your Appointment</h1>
+          <p className="flip-in text-sm font-bold uppercase tracking-[0.22em] text-primary sm:text-base">Book Appointment</p>
+          <h1 className="flip-in mt-2 text-[clamp(1.6rem,4vw,2.5rem)] font-bold text-black" style={{ '--flip-delay': '120ms' }}>Book Your Appointment</h1>
         </div>
-        <AppointmentForm />
+        <Reveal>
+          <AppointmentForm />
+        </Reveal>
       </div>
     </section>
   );

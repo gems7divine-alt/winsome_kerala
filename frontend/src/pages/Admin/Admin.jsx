@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Aurora, FloatingOrbs } from '../../components/ui/Decor';
+import Reveal from '../../components/ui/Reveal';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -52,15 +54,19 @@ export default function Admin({ onBack, onLoginSuccess }) {
   };
 
   return (
-    <section className="mx-auto flex min-h-screen max-w-[480px] flex-col justify-center px-5 pt-24 pb-12 sm:px-8">
-      <p className="text-center text-base font-bold uppercase tracking-[0.22em] text-primary">Admin</p>
-      <h1 className="mt-2 text-center text-3xl font-bold text-black">Admin Login</h1>
+    <section className="relative overflow-hidden bg-gradient-to-b from-primary-soft to-white">
+      <Aurora />
+      <FloatingOrbs />
+      <div className="relative z-10 mx-auto flex min-h-svh max-w-[480px] flex-col justify-center px-5 pb-12 pt-24 sm:px-8">
+      <p className="flip-in text-center text-sm font-bold uppercase tracking-[0.22em] text-primary sm:text-base">Admin</p>
+      <h1 className="flip-in mt-2 text-center text-3xl font-bold text-black" style={{ '--flip-delay': '120ms' }}>Admin Login</h1>
 
-      <form onSubmit={handleSubmit} className="mt-6 space-y-3 rounded-3xl border border-slate-100 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
+      <Reveal>
+      <form onSubmit={handleSubmit} className="mt-6 space-y-3.5 rounded-3xl border border-slate-100 bg-white p-5 shadow-[0_8px_0_#fbd5ea,0_30px_70px_rgba(143,15,85,0.16)] sm:p-6">
         <label className="block">
           <span className="mb-1.5 block text-sm font-bold text-black">Password</span>
           <input
-            className="h-11 w-full rounded-xl border border-slate-200 px-4 text-sm font-medium outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+            className="h-12 w-full rounded-xl border border-slate-200 px-4 text-base font-medium shadow-[inset_0_2px_4px_rgba(15,23,42,0.05)] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 sm:text-sm"
             placeholder="Enter password"
             type="password"
             value={password}
@@ -74,18 +80,20 @@ export default function Admin({ onBack, onLoginSuccess }) {
         <button
           type="submit"
           disabled={loading}
-          className="h-11 w-full rounded-xl bg-primary text-sm font-bold text-white transition hover:bg-primary-dark disabled:opacity-70"
+          className="btn-3d btn-3d-filled min-h-12 w-full rounded-xl text-sm font-bold disabled:opacity-70"
         >
           {loading ? 'Logging in...' : 'Login'}
         </button>
         <button
           type="button"
           onClick={onBack}
-          className="h-11 w-full rounded-xl border border-slate-200 text-sm font-bold text-black transition hover:bg-slate-50"
+          className="min-h-12 w-full rounded-xl border border-slate-200 text-sm font-bold text-black transition hover:bg-slate-50"
         >
           Back to Home
         </button>
       </form>
+      </Reveal>
+      </div>
     </section>
   );
 }

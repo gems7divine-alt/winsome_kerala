@@ -73,7 +73,7 @@ export default function App() {
   }, [activePage]);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-svh overflow-x-clip bg-white">
       <Header activePage={navHighlight} onNavigate={handleNavigate} />
       <main>
         {activePage === 'booking' ? (

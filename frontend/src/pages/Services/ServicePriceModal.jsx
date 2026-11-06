@@ -19,23 +19,23 @@ export default function ServicePriceModal({ service, categories, onClose, onBook
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/50 p-0 backdrop-blur-sm sm:items-center sm:p-5"
+      className="modal-backdrop fixed inset-0 z-[100] flex items-end justify-center bg-[#2a0a1c]/55 p-0 backdrop-blur-sm sm:items-center sm:p-5"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label={`${service.title} prices`}
     >
       <div
-        className="max-h-[92vh] w-full max-w-[560px] overflow-hidden rounded-t-3xl bg-white shadow-2xl sm:rounded-3xl"
+        className="modal-3d flex max-h-[92dvh] w-full max-w-[560px] flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl sm:max-h-[calc(100dvh-2.5rem)] sm:rounded-3xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="relative bg-primary px-5 pb-5 pt-4 sm:px-6">
+        <div className="relative shrink-0 bg-[linear-gradient(120deg,#f4379f,var(--color-primary-dark))] px-5 pb-5 pt-4 sm:px-6">
           <button
             type="button"
             onClick={onClose}
             aria-label="Close price details"
-            className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full bg-white/20 text-white transition hover:bg-white hover:text-primary"
+            className="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-white/20 text-white transition hover:bg-white hover:text-primary"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
@@ -62,7 +62,7 @@ export default function ServicePriceModal({ service, categories, onClose, onBook
         </div>
 
         {/* Price list */}
-        <div className="max-h-[55vh] overflow-y-auto px-5 py-4 sm:px-6">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4 sm:px-6">
           {categories.length > 0 ? (
             categories.map((category) => (
               <div key={category.id} className="mb-4 last:mb-1">
@@ -96,11 +96,11 @@ export default function ServicePriceModal({ service, categories, onClose, onBook
         </div>
 
         {/* Footer */}
-        <div className="flex gap-2 border-t border-slate-100 bg-white px-5 py-4 sm:px-6">
+        <div className="flex shrink-0 gap-3 border-t border-slate-100 bg-white px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 sm:px-6">
           <button
             type="button"
             onClick={onClose}
-            className="h-11 flex-1 rounded-xl border border-slate-200 text-sm font-bold text-black transition hover:bg-slate-50"
+            className="min-h-11 flex-1 rounded-xl border border-slate-200 text-sm font-bold text-black transition hover:bg-slate-50"
           >
             Close
           </button>
@@ -110,7 +110,7 @@ export default function ServicePriceModal({ service, categories, onClose, onBook
               onClose?.();
               onBook?.();
             }}
-            className="group inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-primary text-sm font-bold text-white shadow-[0_10px_24px_rgba(233,30,140,0.3)] transition hover:bg-primary-dark"
+            className="btn-3d btn-3d-filled group inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl text-sm font-bold"
           >
             <CalendarIcon className="h-4 w-4" />
             Book Now

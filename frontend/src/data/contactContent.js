@@ -15,15 +15,15 @@ export const contactInfoCards = [
     id: 'location',
     icon: 'location',
     title: 'Our Location',
-    lines: ['Chemmanoor Junction, Kalpetta,', 'Wayanad, Kerala, India'],
+    lines: ['Pallithazhe Road, Chemmanoor Junction,', 'Kalpetta, Wayanad, Kerala, India'],
     links: ['https://maps.app.goo.gl/ZkkY63xbxrP7aSjDA?g_st=aw'],
   },
   {
     id: 'phone',
     icon: 'phone',
     title: 'Call Us',
-    lines: ['+91 9744282411'],
-    links: ['tel:+919744282411'],
+    lines: ['+91 9744282411', '+91 95397 64914'],
+    links: ['tel:+919744282411', 'tel:+919539764914'],
   },
   {
     id: 'email',
@@ -42,7 +42,7 @@ export const contactInfoCards = [
 
 export const mapDetails = {
   title: 'Find Us Here',
-  address: 'Chemmanoor Junction, Kalpetta, Wayanad, Kerala, India',
+  address: 'Pallithazhe Road, Chemmanoor Junction, Kalpetta, Wayanad, Kerala, India',
   embedUrl:
     'https://www.google.com/maps?q=Chemmanoor+Junction+Kalpetta+Wayanad+Kerala&output=embed',
   directionsUrl: 'https://maps.app.goo.gl/ZkkY63xbxrP7aSjDA?g_st=aw',

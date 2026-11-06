@@ -1,3 +1,5 @@
+import Tilt3D from '../../components/ui/Tilt3D';
+
 function ContactCardIcon({ name }) {
   const icons = {
     location: (
@@ -36,12 +38,12 @@ function ContactCardIcon({ name }) {
 
 export default function ContactInfoCard({ icon, title, lines, links = [] }) {
   return (
-    <article className="rounded-2xl border border-slate-100 bg-white px-5 py-6 text-center shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
-      <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary/10 text-primary">
+    <Tilt3D as="article" className="card-lift relative h-full rounded-3xl border border-slate-100 bg-white px-5 py-7 text-center shadow-[0_12px_34px_rgba(15,23,42,0.07)]">
+      <div className="coin-flip mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-primary to-primary-dark text-white shadow-[0_5px_0_var(--color-primary-deep),0_16px_26px_rgba(233,30,140,0.3)]">
         <ContactCardIcon name={icon} />
       </div>
-      <h3 className="mt-4 text-base font-bold text-primary sm:text-lg">{title}</h3>
-      <div className="mt-3 space-y-1 text-sm font-medium leading-6 text-black/85">
+      <h3 className="depth-2 mt-5 text-base font-bold text-primary sm:text-lg">{title}</h3>
+      <div className="depth-1 mt-3 space-y-1 break-words text-sm font-medium leading-6 text-black/85">
         {lines.map((line, index) =>
           links[index] ? (
             <a key={line} href={links[index]} className="block transition hover:text-primary">
@@ -52,6 +54,6 @@ export default function ContactInfoCard({ icon, title, lines, links = [] }) {
           ),
         )}
       </div>
-    </article>
+    </Tilt3D>
   );
 }

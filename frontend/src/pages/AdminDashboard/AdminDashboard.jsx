@@ -110,21 +110,21 @@ export default function AdminDashboard({ onLogout, onBack }) {
   };
 
   return (
-    <section className="bg-white pt-24 pb-12">
-      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-8">
+    <section className="min-h-svh bg-gradient-to-b from-primary-soft to-white pb-12 pt-24 sm:pt-28">
+      <div className="site-container max-w-[1320px]">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-base font-bold uppercase tracking-[0.22em] text-primary">Admin Dashboard</p>
+            <p className="text-sm font-bold uppercase tracking-[0.22em] text-primary sm:text-base">Admin Dashboard</p>
             <h1 className="mt-2 text-2xl font-bold text-black sm:text-3xl">All Booking Details</h1>
             <p className="mt-1 text-sm font-medium text-black/60">
               {filtered.length} of {bookings.length} bookings
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid w-full grid-cols-3 gap-2 sm:flex sm:w-auto sm:flex-wrap">
             <button
               type="button"
               onClick={fetchBookings}
-              className="h-10 rounded-xl border border-slate-200 px-4 text-sm font-bold text-black transition hover:bg-slate-50"
+              className="min-h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-black transition hover:bg-slate-50"
             >
               Refresh
             </button>
@@ -132,7 +132,7 @@ export default function AdminDashboard({ onLogout, onBack }) {
               <button
                 type="button"
                 onClick={onBack}
-                className="h-10 rounded-xl border border-slate-200 px-4 text-sm font-bold text-black transition hover:bg-slate-50"
+                className="min-h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-black transition hover:bg-slate-50"
               >
                 Home
               </button>
@@ -140,7 +140,7 @@ export default function AdminDashboard({ onLogout, onBack }) {
             <button
               type="button"
               onClick={handleLogout}
-              className="h-10 rounded-xl bg-primary px-4 text-sm font-bold text-white transition hover:bg-primary-dark"
+              className="btn-3d btn-3d-filled min-h-11 rounded-xl px-4 text-sm font-bold"
             >
               Logout
             </button>
@@ -149,7 +149,7 @@ export default function AdminDashboard({ onLogout, onBack }) {
 
         <div className="mb-4 flex flex-col gap-2 sm:flex-row">
           <input
-            className="h-11 w-full rounded-xl border border-slate-200 px-4 text-sm font-medium outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+            className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-base font-medium outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 sm:text-sm"
             placeholder="Search by name, mobile, email or service..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -157,7 +157,7 @@ export default function AdminDashboard({ onLogout, onBack }) {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold outline-none focus:border-primary"
+            className="h-12 rounded-xl border border-slate-200 bg-white px-4 text-base font-semibold outline-none focus:border-primary sm:text-sm"
           >
             {STATUS_OPTIONS.map((s) => (
               <option key={s} value={s}>
@@ -178,7 +178,53 @@ export default function AdminDashboard({ onLogout, onBack }) {
         )}
 
         {!loading && !error && filtered.length > 0 && (
-          <div className="overflow-x-auto rounded-3xl ring-1 ring-black/[0.04] shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:hidden">
+            {filtered.map((b) => (
+              <article key={b.id} className="rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_5px_0_#fbd5ea,0_18px_40px_rgba(143,15,85,0.1)]">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-black/50">#{b.id}</p>
+                    <h2 className="break-words text-base font-bold text-black">{b.full_name}</h2>
+                  </div>
+                  <span className={`${statusPill(b.status)} shrink-0`}>{b.status}</span>
+                </div>
+
+                <p className="mt-3 text-sm font-semibold text-black">{b.service_name}</p>
+                <p className="text-xs text-black/50">{b.duration_mins} mins · {b.slots_blocked} slot(s)</p>
+                <p className="mt-2 text-sm font-bold text-primary">{formatDate(b.booking_date)} · {formatTime(b.booking_time)}</p>
+
+                <div className="mt-3 space-y-1 border-t border-slate-100 pt-3 text-sm">
+                  <a href={`tel:${b.mobile_number}`} className="block font-medium text-black">{b.mobile_number}</a>
+                  <a href={`mailto:${b.email_address}`} className="block break-all text-black/70">{b.email_address}</a>
+                </div>
+
+                <div className="mt-4 flex items-center gap-2">
+                  <select
+                    value={EDITABLE_STATUSES.includes(b.status) ? b.status : 'confirmed'}
+                    disabled={updatingId === b.id}
+                    onChange={(e) => handleStatusChange(b.id, e.target.value)}
+                    className="h-11 min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 text-base font-semibold outline-none focus:border-primary sm:text-sm"
+                    aria-label={`Change status for booking ${b.id}`}
+                  >
+                    {EDITABLE_STATUSES.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(b.id)}
+                    className="h-11 rounded-xl border border-red-200 px-4 text-sm font-bold text-red-600 transition hover:bg-red-50"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+
+        {!loading && !error && filtered.length > 0 && (
+          <div className="hidden overflow-x-auto rounded-3xl lg:block ring-1 ring-black/[0.04] shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
             <table className="w-full min-w-[900px] border-collapse bg-white text-left text-sm">
               <thead>
                 <tr className="bg-slate-50 text-xs uppercase tracking-wide text-black/60">

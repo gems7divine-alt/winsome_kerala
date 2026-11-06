@@ -1,8 +1,11 @@
 import { ArrowRightIcon } from '../../components/ui/Icon';
+import Tilt3D from '../../components/ui/Tilt3D';
 
 export default function ServiceCard({ title, subtitle, image, price, onSelect, onBook }) {
   return (
-    <article
+    <Tilt3D
+      as="article"
+      max={11}
       onClick={onSelect}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -14,49 +17,50 @@ export default function ServiceCard({ title, subtitle, image, price, onSelect, o
       role="button"
       aria-label={`View ${title} prices`}
       title={`Click to view ${title} prices`}
-      className="group relative flex min-h-[88px] cursor-pointer items-center gap-3 rounded-2xl border border-slate-100 bg-white px-3 py-3 shadow-[0_4px_20px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-[0_8px_28px_rgba(233,30,140,0.12)] focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 sm:min-h-[96px] sm:gap-4 sm:px-4"
+      className="card-lift group relative flex h-full cursor-pointer flex-col rounded-3xl border border-slate-100 bg-white p-2 shadow-[0_10px_30px_rgba(15,23,42,0.07)] sm:p-2.5"
     >
-      <div className="grid h-[62px] w-[62px] shrink-0 place-items-center rounded-full border-2 border-primary p-[3px] sm:h-[68px] sm:w-[68px]">
+      <div className="depth-1 relative mx-auto aspect-square w-full max-w-[220px] ring-spin overflow-hidden rounded-full bg-primary-soft p-1 shadow-[0_12px_24px_rgba(143,15,85,0.2)]">
         <img
-          className="h-full w-full rounded-full object-cover"
+          className="h-full w-full rounded-full object-cover transition-transform duration-700 ease-spring group-hover:scale-110"
           src={image}
           alt={title}
           loading="lazy"
+          decoding="async"
         />
       </div>
 
-      <div className="min-w-0 flex-1 pr-8">
-        <h3 className="text-sm font-bold leading-tight text-black sm:text-[15px]">{title}</h3>
+      <div className="preserve-3d flex flex-1 flex-col px-1 pb-1 pt-3 sm:px-1.5">
+        <h3 className="depth-1 text-center text-[13px] font-bold leading-snug text-black sm:text-[15px]">{title}</h3>
         {subtitle && (
-          <p className="mt-0.5 text-[11px] font-medium leading-snug text-text-muted sm:text-xs">
-            ({subtitle})
-          </p>
+          <p className="depth-1 mt-0.5 text-center text-[11px] font-medium leading-snug text-text-muted sm:text-xs">({subtitle})</p>
         )}
-        {price ? (
-          <p className="mt-1 inline-block rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-bold text-primary sm:text-xs">
-            {price}
-          </p>
-        ) : (
-          <p className="mt-1 inline-block rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-text-muted sm:text-xs">
-            Click to view price
-          </p>
-        )}
-        <p className="mt-0.5 hidden text-[10px] font-semibold uppercase tracking-wide text-primary/70 group-hover:text-primary sm:block">
-          View details
-        </p>
-      </div>
 
-      <button
-        type="button"
-        aria-label={`Book ${title}`}
-        onClick={(e) => {
-          e.stopPropagation();
-          onBook?.();
-        }}
-        className="absolute bottom-2.5 right-2.5 grid h-7 w-7 place-items-center rounded-full bg-primary text-white shadow-[0_6px_16px_rgba(233,30,140,0.28)] transition group-hover:scale-105"
-      >
-        <ArrowRightIcon className="h-3.5 w-3.5" />
-      </button>
-    </article>
+        <div className="preserve-3d mt-auto flex items-end justify-between gap-1.5 pt-2.5">
+          <div className="depth-2 min-w-0">
+            {price ? (
+              <p className="rounded-full bg-primary-soft px-2 py-1 text-[11px] font-bold leading-tight text-primary sm:px-2.5 sm:text-xs">
+                {price}
+              </p>
+            ) : (
+              <p className="rounded-full bg-slate-100 px-2 py-1 text-[11px] font-bold leading-tight text-text-muted sm:text-xs">
+                View price
+              </p>
+            )}
+          </div>
+
+          <button
+            type="button"
+            aria-label={`Book ${title}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onBook?.();
+            }}
+            className="depth-3 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-white shadow-[0_3px_0_var(--color-primary-deep),0_10px_18px_rgba(233,30,140,0.35)]"
+          >
+            <ArrowRightIcon className="h-4 w-4 transition group-hover:translate-x-0.5" />
+          </button>
+        </div>
+      </div>
+    </Tilt3D>
   );
 }
