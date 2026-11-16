@@ -36,7 +36,6 @@ from emailsending import send_booking_confirmation
 
 
 class AdminLogin(BaseModel):
-    username: str
     password: str
 
 
@@ -103,16 +102,15 @@ def health():
 
 @app.post("/api/admin/login", tags=["admin"], summary="Fixed admin login")
 def admin_login(creds: AdminLogin):
-    """Check fixed admin credentials (defaults: vimal / 123456).
+    """Check the fixed admin password (default: winsome@2020). No username.
 
-    Override with env vars ADMIN_USERNAME / ADMIN_PASSWORD in production.
+    Override with env var ADMIN_PASSWORD in production.
     NOTE: demo-only — use proper hashed auth for real deployments.
     """
-    expected_user = os.getenv("ADMIN_USERNAME", "vimal")
-    expected_pass = os.getenv("ADMIN_PASSWORD", "123456")
-    if creds.username == expected_user and creds.password == expected_pass:
-        return {"ok": True, "username": expected_user}
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password.")
+    expected_pass = os.getenv("ADMIN_PASSWORD", "winsome@2020")
+    if creds.password == expected_pass:
+        return {"ok": True}
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password.")
 
 
 @app.post(

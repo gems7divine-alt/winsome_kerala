@@ -20,12 +20,12 @@ export default function Admin({ onBack, onLoginSuccess }) {
 
     try {
       // 1) Try backend verification first (POST /api/admin/login).
-      //    Username is fixed; the form only asks for the password.
+      //    Password only — there is no username.
       try {
         const res = await fetch(`${API_BASE}/api/admin/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: FIXED_USERNAME, password: p }),
+          body: JSON.stringify({ password: p }),
         });
         if (res.ok) {
           sessionStorage.setItem('winsome_admin_auth', '1');
