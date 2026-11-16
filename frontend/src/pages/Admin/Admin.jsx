@@ -4,7 +4,7 @@ import Reveal from '../../components/ui/Reveal';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-const FIXED_PASSWORD = '123456';
+const FIXED_PASSWORD = 'winsome@2020';
 
 export default function Admin({ onBack, onLoginSuccess }) {
   const [password, setPassword] = useState('');
