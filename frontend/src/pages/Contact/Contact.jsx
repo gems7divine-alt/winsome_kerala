@@ -105,6 +105,20 @@ function MapSection() {
                   referrerPolicy="no-referrer-when-downgrade"
                   allowFullScreen
                 />
+                {/* Covers Google's own place card (whose "Open in Maps" link we can't change)
+                    so the visible link always opens our exact listing. */}
+                <div className="absolute left-2.5 top-2.5 z-10 w-[min(300px,calc(100%-20px))] rounded-md bg-white p-3 shadow-[0_1px_4px_rgba(0,0,0,0.3)]">
+                  <p className="truncate text-sm font-semibold text-black">Winsome Makeover Aesthetic Beauty Clinic</p>
+                  <p className="mt-0.5 truncate text-xs text-text-muted">Chemmannoor Junction, Kalpetta, Kerala</p>
+                  <a
+                    href={mapDetails.directionsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-2 inline-block text-xs font-semibold text-[#1a73e8] hover:underline"
+                  >
+                    Open in Maps
+                  </a>
+                </div>
               </div>
             </div>
           </div>

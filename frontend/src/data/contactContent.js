@@ -16,7 +16,7 @@ export const contactInfoCards = [
     icon: 'location',
     title: 'Our Location',
     lines: ['Pallithazhe Road, Chemmanoor Junction,', 'Kalpetta, Wayanad, Kerala, India'],
-    links: ['https://maps.app.goo.gl/ZkkY63xbxrP7aSjDA?g_st=aw'],
+    links: ['https://maps.app.goo.gl/5ew9VJFTBQvV2c9s8?g_st=ac'],
   },
   {
     id: 'phone',
@@ -44,8 +44,8 @@ export const mapDetails = {
   title: 'Find Us Here',
   address: 'Pallithazhe Road, Chemmanoor Junction, Kalpetta, Wayanad, Kerala, India',
   embedUrl:
-    'https://www.google.com/maps?q=Chemmanoor+Junction+Kalpetta+Wayanad+Kerala&output=embed',
-  directionsUrl: 'https://maps.app.goo.gl/ZkkY63xbxrP7aSjDA?g_st=aw',
+    'https://www.google.com/maps?q=Winsome+Makeover+Aesthetic+Beauty+Clinic,+Chemmannoor+Junction,+Kalpetta,+Kerala+673121&output=embed',
+  directionsUrl: 'https://maps.app.goo.gl/5ew9VJFTBQvV2c9s8?g_st=ac',
 };
 
 export const trustIndicators = [
